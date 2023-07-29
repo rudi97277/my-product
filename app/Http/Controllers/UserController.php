@@ -2,49 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\UserRegisterRequest;
+use App\Http\Requests\UserUpdateRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\ImageUploadService;
+use App\Services\UserService;
 use App\Traits\ApiResponser;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Traits\UserInfo;
 
 class UserController extends Controller
 {
     use ApiResponser;
+    protected $service;
+    protected $imageUploadService;
 
-    public function register(Request $request)
+    public function __construct(UserService $userService, ImageUploadService $imageUploadService)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-        ]);
-
-        return $this->showOne($user);
+        $this->service = $userService;
+        $this->imageUploadService = $imageUploadService;
     }
 
-    public function login(Request $request)
+    public function register(UserRegisterRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:6'
-        ]);
+        $user = $this->service->createNewUser($request, $this->imageUploadService);
+        return $this->showOne(new UserResource($user));
+    }
 
-        $user = User::where('email', $request->email)->firstOrFail();
-        if (Hash::check($request->password, $user->password)) {
-            $token = $user->createToken('Personal Access Token');
-            return $this->showOne(['token' => $token->plainTextToken]);
-        }
+    public function login(UserLoginRequest $request)
+    {
+        $token = $this->service->userLogin($request);
+        return $this->showOne($token);
     }
 
     public function profile()
     {
-        $user = User::first();
-        return $this->showOne($user);
+        $user = $this->service->getUserData();
+        return $this->showOne(new UserResource($user));
+    }
+
+    public function update(UserUpdateRequest $request)
+    {
+        $status = $this->service->updateUserProfile($request, $this->imageUploadService);
+        return $this->showOne($status);
     }
 }
