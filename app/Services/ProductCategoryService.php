@@ -53,6 +53,8 @@ class ProductCategoryService
     public function deleteProductCategoryById($id)
     {
         $productCategory = $this->getProductCategoryByIdStrict($id);
+        if (Storage::disk('public')->exists($productCategory->image_url))
+            Storage::disk('public')->delete($productCategory->image_url);
         return $productCategory->delete();
     }
 }
