@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -31,4 +32,5 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::apiResource('product-categories', ProductCategoryController::class);
+    Route::apiResource('products', ProductController::class);
 });

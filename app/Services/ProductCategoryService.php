@@ -13,13 +13,13 @@ class ProductCategoryService
 
     public function getAllProductCategories($request)
     {
-        return ProductCategory::paginate($request->input('page_size', 10));
+        return ProductCategory::when($request->keyword, fn ($query) => $query->where('name', 'LIKE', "%$request->keyword%"))
+            ->paginate($request->input('page_size', 10));
     }
     public function createNewProductCategory($request, ImageUploadService $imageUploadService)
     {
         $userId = $this->getCurrentUser()->id;
         $data = $request->only('name', 'description');
-        $data['is_active'] = true;
         $data['created_by'] = $userId;
         $data['image_url'] = $imageUploadService->uploadImage($request->image);
 
