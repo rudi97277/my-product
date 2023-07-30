@@ -73,4 +73,5 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 4. copy paste the `.env.example` file and rename it to `.env`
 5. run `php artisan key:generate` in your command line terminal
 6. run `php artisan migrate` to run database migration, type `yes` if database doesn't exists
-7. run `php artisan serve` in your command line terminal to run the server
+7. run `php artisan storage:link` to link storage folder to public folder
+8. run `php artisan serve --port=3500` in your command line terminal to run the server (port 3500 is used for postman collection)
