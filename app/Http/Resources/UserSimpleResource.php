@@ -18,7 +18,7 @@ class UserSimpleResource extends JsonResource
             'id' => $this->id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
-            'image_url' => url($this->image_url),
+            'image_url' => url("storage/" . $this->image_url),
         ];
     }
 }
