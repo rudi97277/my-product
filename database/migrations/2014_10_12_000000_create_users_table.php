@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('address');
             $table->string('image_url');
             $table->string('password');
+            $table->unsignedBigInteger('balance')->default(0);
             $table->timestamps();
         });
     }
